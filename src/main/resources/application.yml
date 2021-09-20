@@ -1,0 +1,35 @@
+spring:
+  jpa:
+    open-in-view: false
+  datasource:
+    url: jdbc:postgresql://127.0.0.1:5433,127.0.0.2:5433,127.0.0.3:5433/dta
+    username: yugabyte
+    tomcat:
+      jmx-enabled: true
+      max-active: 5
+      min-idle: 2
+      initial-size: 3
+      validation-query: "select 1"
+      validation-query-timeout: 4 # 3 seconds
+      test-on-borrow: true
+      login-timeout: 5 # setMaxWait * 1000
+      suspect-timeout: 8 # seconds
+      log-abandoned: true   # adds some overhead
+      remove-abandoned: true
+      remove-abandoned-timeout: 16 # seconds
+      # https://jdbc.postgresql.org/documentation/head/connect.html
+      db-properties:
+        socketTimeout: 6 # seconds
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    #org.postgresql: TRACE
+    #org.hibernate.SQL: DEBUG
+    #org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.apache.tomcat.jdbc: INFO
