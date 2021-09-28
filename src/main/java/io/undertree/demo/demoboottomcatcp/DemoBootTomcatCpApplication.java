@@ -4,6 +4,8 @@ import io.undertree.demo.demoboottomcatcp.domain.JobStatus;
 import io.undertree.demo.demoboottomcatcp.domain.JobStatusRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +27,8 @@ public class DemoBootTomcatCpApplication {
         }
 
         @GetMapping("/job-status")
-        public List<JobStatus> findAll() {
-            return jobStatusRepository.findAll();
+        public Page<JobStatus> findAll(Pageable page) {
+            return jobStatusRepository.findAll(page);
         }
 
         @PostMapping("/job-status")

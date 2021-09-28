@@ -4,22 +4,142 @@ spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5433,127.0.0.2:5433,127.0.0.3:5433/dta
     username: yugabyte
+
+    # https://tomcat.apache.org/tomcat-8.0-doc/jdbc-pool.html#Common_Attributes
     tomcat:
-      jmx-enabled: true
-      max-active: 5
-      min-idle: 2
+      # jmxEnabled (boolean)
+      # Register the pool with JMX or not. The default value is true.
+      jmx-enabled: true # Spring Boot disables this
+
+      # initialSize	(int)
+      # The initial number of connections that are created when the pool is
+      # started. Default value is 10
       initial-size: 3
-      validation-query: "select 1"
-      validation-query-timeout: 4 # 3 seconds
+
+      # maxActive (int)
+      # The maximum number of active connections that can be allocated from
+      # this pool at the same time. The default value is 100
+      max-active: 5
+
+      # minIdle	(int)
+      # The minimum number of established connections that should be kept in
+      # the pool at all times. The connection pool can shrink below this number
+      # if validation queries fail. Default value is derived from
+      # initialSize:10 (also see testWhileIdle)
+      min-idle: 3
+
+      # maxAge	(long)
+      # Time in milliseconds to keep this connection. This attribute works both
+      # when returning connection and when borrowing connection. When a
+      # connection is borrowed from the pool, the pool will check to see if the
+      # now - time-when-connected > maxAge has been reached , and if so, it
+      # reconnects before borrow it. When a connection is returned to the pool,
+      # the pool will check to see if the now - time-when-connected > maxAge
+      # has been reached, and if so, it closes the connection rather than
+      # returning it to the pool. The default value is 0, which implies that
+      # connections will be left open and no age check will be done upon
+      # borrowing from the pool and returning the connection to the pool.
+      #max-age: 90000 # 90 seconds
+
+      # testOnBorrow (boolean)
+      # The indication of whether objects will be validated before being
+      # borrowed from the pool. If the object fails to validate, it will be
+      # dropped from the pool, and we will attempt to borrow another. In order
+      # to have a more efficient validation, see validationInterval.
+      # Default value is false
       test-on-borrow: true
-      login-timeout: 5 # setMaxWait * 1000
+
+      # validationQuery (String)
+      # The SQL query that will be used to validate connections from this pool
+      # before returning them to the caller. If specified, this query does not
+      # have to return any data, it just can't throw a SQLException. The
+      # default value is null. If not specified, connections will be validation
+      # by the isValid() method. Example values are SELECT 1(mysql), select 1
+      # from dual(oracle), SELECT 1(MS Sql Server)
+      validation-query: "select 1"
+
+      # validationQueryTimeout (int)
+      # The timeout in seconds before a connection validation queries fail.
+      # This works by calling java.sql.Statement.setQueryTimeout(seconds) on
+      # the statement that executes the validationQuery. The pool itself
+      # doesn't timeout the query, it is still up to the JDBC driver to enforce
+      # query timeouts. A value less than or equal to zero will disable this
+      # feature. The default value is -1.
+      #validation-query-timeout: 4 # in seconds
+
+      # maxWait (int)
+      # The maximum number of milliseconds that the pool will wait (when there
+      # are no available connections) for a connection to be returned before
+      # throwing an exception. Default value is 30000 (30 seconds)
+      login-timeout: 5 # seconds (i.e. setMaxWait * 1000)
+
+      # logAbandoned (boolean)
+      # Flag to log stack traces for application code which abandoned a
+      # Connection. Logging of abandoned Connections adds overhead for every
+      # Connection borrow because a stack trace has to be generated. The
+      # default value is false.
+      log-abandoned: true   # turn this off after validation
+
+      # suspectTimeout (int)
+      # Timeout value in seconds. Default value is 0.
+      # Similar to the removeAbandonedTimeout value but instead of treating the
+      # connection as abandoned, and potentially closing the connection, this
+      # simply logs the warning if logAbandoned is set to true. If this value
+      # is equal or less than 0, no suspect checking will be performed. Suspect
+      # checking only takes place if the timeout value is larger than 0 and the
+      # connection was not abandoned or if abandon check is disabled. If a
+      # connection is suspect a WARN message gets logged and a JMX notification
+      # gets sent once.
       suspect-timeout: 8 # seconds
-      log-abandoned: true   # adds some overhead
-      remove-abandoned: true
-      remove-abandoned-timeout: 16 # seconds
+
+      # removeAbandoned (boolean)
+      # Flag to remove abandoned connections if they exceed the
+      # removeAbandonedTimeout. If set to true a connection is considered
+      # abandoned and eligible for removal if it has been in use longer than
+      # the removeAbandonedTimeout Setting this to true can recover db
+      # connections from applications that fail to close a connection. See also
+      # logAbandoned The default value is false.
+      #remove-abandoned: true
+
+      # removeAbandonedTimeout (int)
+      # Timeout in seconds before an abandoned (in use) connection can be
+      # removed. The default value is 60 (60 seconds). The value should be set
+      # to the longest running query your applications might have.
+      #remove-abandoned-timeout: 16 # seconds
+
+      # abandonWhenPercentageFull (int)
+      # Connections that have been abandoned (timed out) won't get closed and
+      # reported up unless the number of connections in use are above the
+      # percentage defined by abandonWhenPercentageFull. The value should be
+      # between 0-100. The default value is 0, which implies that connections
+      # are eligible for closure as soon as removeAbandonedTimeout has been
+      # reached.
+      #abandon-when-percentage-full: 50 # 50%
+
       # https://jdbc.postgresql.org/documentation/head/connect.html
       db-properties:
-        socketTimeout: 6 # seconds
+        # socketTimeout = int
+        # The timeout value used for socket read operations. If reading from
+        # the server takes longer than this value, the connection is closed.
+        # This can be used as both a brute force global query timeout and a
+        # method of detecting network problems. The timeout is specified in
+        # seconds and a value of zero means that it is disabled.
+        #socketTimeout: 90 # seconds
+
+        # connectTimeout = int
+        # The timeout value used for socket connect operations. If connecting
+        # to the server takes longer than this value, the connection is broken.
+        # The timeout is specified in seconds and a value of zero means that it
+        # is disabled.
+        #connectTimeout: 9 # seconds
+
+        #loggerLevel: TRACE
+
+        escapeSyntaxCallMode: callIfNoReturn
+
+
+# oracle.net.CONNECT_TIMEOUT: 9000 (millis, 9 seconds)
+# oracle.jdbc.ReadTimeout: 90000 (millis, 90 seconds)
 
 management:
   endpoints:
