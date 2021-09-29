@@ -4,6 +4,9 @@ spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5433,127.0.0.2:5433,127.0.0.3:5433/dta
     username: yugabyte
+    #url: jdbc:postgresql://127.0.0.1:5432/dta
+    #username: postgres
+    #password: password
 
     # https://tomcat.apache.org/tomcat-8.0-doc/jdbc-pool.html#Common_Attributes
     tomcat:
@@ -19,7 +22,7 @@ spring:
       # maxActive (int)
       # The maximum number of active connections that can be allocated from
       # this pool at the same time. The default value is 100
-      max-active: 5
+      max-active: 16
 
       # minIdle	(int)
       # The minimum number of established connections that should be kept in
@@ -39,7 +42,7 @@ spring:
       # returning it to the pool. The default value is 0, which implies that
       # connections will be left open and no age check will be done upon
       # borrowing from the pool and returning the connection to the pool.
-      #max-age: 90000 # 90 seconds
+      max-age: 300000 # 5 minutes
 
       # testOnBorrow (boolean)
       # The indication of whether objects will be validated before being
@@ -65,7 +68,7 @@ spring:
       # doesn't timeout the query, it is still up to the JDBC driver to enforce
       # query timeouts. A value less than or equal to zero will disable this
       # feature. The default value is -1.
-      #validation-query-timeout: 4 # in seconds
+      validation-query-timeout: 3 # seconds
 
       # maxWait (int)
       # The maximum number of milliseconds that the pool will wait (when there
@@ -90,7 +93,7 @@ spring:
       # connection was not abandoned or if abandon check is disabled. If a
       # connection is suspect a WARN message gets logged and a JMX notification
       # gets sent once.
-      suspect-timeout: 8 # seconds
+      suspect-timeout: 10 # seconds
 
       # removeAbandoned (boolean)
       # Flag to remove abandoned connections if they exceed the
@@ -99,13 +102,13 @@ spring:
       # the removeAbandonedTimeout Setting this to true can recover db
       # connections from applications that fail to close a connection. See also
       # logAbandoned The default value is false.
-      #remove-abandoned: true
+      remove-abandoned: true
 
       # removeAbandonedTimeout (int)
       # Timeout in seconds before an abandoned (in use) connection can be
       # removed. The default value is 60 (60 seconds). The value should be set
       # to the longest running query your applications might have.
-      #remove-abandoned-timeout: 16 # seconds
+      remove-abandoned-timeout: 30 # seconds
 
       # abandonWhenPercentageFull (int)
       # Connections that have been abandoned (timed out) won't get closed and
@@ -114,7 +117,7 @@ spring:
       # between 0-100. The default value is 0, which implies that connections
       # are eligible for closure as soon as removeAbandonedTimeout has been
       # reached.
-      #abandon-when-percentage-full: 50 # 50%
+      abandon-when-percentage-full: 50 # 50%
 
       # https://jdbc.postgresql.org/documentation/head/connect.html
       db-properties:
@@ -124,14 +127,14 @@ spring:
         # This can be used as both a brute force global query timeout and a
         # method of detecting network problems. The timeout is specified in
         # seconds and a value of zero means that it is disabled.
-        #socketTimeout: 90 # seconds
+        socketTimeout: 90 # seconds
 
         # connectTimeout = int
         # The timeout value used for socket connect operations. If connecting
         # to the server takes longer than this value, the connection is broken.
         # The timeout is specified in seconds and a value of zero means that it
         # is disabled.
-        #connectTimeout: 9 # seconds
+        connectTimeout: 9 # seconds
 
         #loggerLevel: TRACE
 
@@ -152,4 +155,5 @@ logging:
     #org.postgresql: TRACE
     #org.hibernate.SQL: DEBUG
     #org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.apache.tomcat.jdbc: INFO
+    #org.apache.tomcat.jdbc: INFO
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF  # suppress errors during retry
