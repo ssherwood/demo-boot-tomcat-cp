@@ -14,6 +14,6 @@ public interface JobStatusRepository extends PagingAndSortingRepository<JobStatu
     //@QueryHints(@javax.persistence.QueryHint(name="org.hibernate.fetchSize", value="50"))
     Page<JobStatus> findAll(Pageable pageable);
 
-    @Query(value = "select * from job_status limit 20", nativeQuery = true)
+    @Query(value = "select * from job_status order by job_end_ts limit 20", nativeQuery = true)
     Iterable<JobStatus> findAllCustom();
 }

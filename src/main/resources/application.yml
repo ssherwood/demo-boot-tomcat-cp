@@ -139,6 +139,8 @@ spring:
         #loggerLevel: TRACE
 
         escapeSyntaxCallMode: callIfNoReturn
+  flyway:
+    validate-migration-naming: true
 
 
 # oracle.net.CONNECT_TIMEOUT: 9000 (millis, 9 seconds)
@@ -155,5 +157,5 @@ logging:
     #org.postgresql: TRACE
     #org.hibernate.SQL: DEBUG
     #org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    #org.apache.tomcat.jdbc: INFO
-    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF  # suppress errors during retry
+    org.apache.tomcat.jdbc: INFO
+    #org.hibernate.engine.jdbc.spi.SqlExceptionHelper: OFF  # suppress errors during retry
