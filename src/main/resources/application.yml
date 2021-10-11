@@ -2,9 +2,9 @@ spring:
   jpa:
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5433,127.0.0.2:5433,127.0.0.3:5433/dta
+    url: jdbc:postgresql://127.0.0.1:5433,127.0.0.2:5433,127.0.0.3:5433/tcpool
     username: yugabyte
-#    url: jdbc:postgresql://127.0.0.1:5432/dta
+#    url: jdbc:postgresql://127.0.0.1:5432/tcpool
 #    username: postgres
 #    password: password
 
