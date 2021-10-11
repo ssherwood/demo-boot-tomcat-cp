@@ -19,7 +19,7 @@ import java.util.UUID;
 public class JobStatusService {
     final JdbcTemplate jdbcTemplate;
     final EntityManager entityManager;
-    private final JobStatusRepository jobStatusRepository;
+    final JobStatusRepository jobStatusRepository;
 
     /**
      * @param jdbcTemplate
@@ -60,6 +60,7 @@ public class JobStatusService {
      * @param status
      * @return
      */
+    @Transactional
     @Retryable(value = SQLException.class, exceptionExpression = "message.contains('could not execute statement')", maxAttempts = 3)
     public JobStatus updateStatusSpringDataJPA(UUID id, String status) {
         var jobStatus = jobStatusRepository.findById(id).orElseThrow(IllegalStateException::new);
